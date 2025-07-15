@@ -1,20 +1,31 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import Image from "next/image"
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 
-const productImages = ["/images/product1.png", "/images/product2.png", "/images/product3.png", "/images/smartphone.png"]
+const productImages = [
+  "/images/product1.png",
+  "/images/product2.png",
+  "/images/product3.png",
+  "/images/smartphone.png",
+];
 
 interface FallingProductProps {
-  src: string
-  delay: number
-  duration: number
-  xPosition: number
-  size: number
+  src: string;
+  delay: number;
+  duration: number;
+  xPosition: number;
+  size: number;
 }
 
-function FallingProduct({ src, delay, duration, xPosition, size }: FallingProductProps) {
+function FallingProduct({
+  src,
+  delay,
+  duration,
+  xPosition,
+  size,
+}: FallingProductProps) {
   return (
     <motion.div
       className="absolute pointer-events-none"
@@ -47,42 +58,59 @@ function FallingProduct({ src, delay, duration, xPosition, size }: FallingProduc
         className="object-contain drop-shadow-lg"
       />
     </motion.div>
-  )
+  );
 }
 
 export default function FallingProducts() {
+  const PRODUCT_COUNT = 20;
   const [products, setProducts] = useState<
     Array<{
-      id: number
-      src: string
-      delay: number
-      duration: number
-      xPosition: number
-      size: number
+      id: number;
+      src: string;
+      delay: number;
+      duration: number;
+      xPosition: number;
+      size: number;
     }>
-  >([])
+  >([]);
+
+  // Helper to generate a single product
+  const generateProduct = (id: number) => ({
+    id,
+    src: productImages[Math.floor(Math.random() * productImages.length)],
+    delay: Math.random() * 4,
+    duration: 8 + Math.random() * 4,
+    xPosition: Math.random() * 90,
+    size: 80 + Math.random() * 60,
+  });
+
 
   useEffect(() => {
-    const generateProducts = () => {
-      const newProducts = []
+    // Initialize products
+    setProducts(Array.from({ length: PRODUCT_COUNT }, (_, i) => generateProduct(i)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-      // Generate multiple instances of falling products
-      for (let i = 0; i < 20; i++) {
-        newProducts.push({
-          id: i,
-          src: productImages[Math.floor(Math.random() * productImages.length)],
-          delay: Math.random() * 4, // Random delay between 0-4 seconds (reduced from 8)
-          duration: 8 + Math.random() * 4, // Duration between 8-12 seconds (increased)
-          xPosition: Math.random() * 90, // Random horizontal position
-          size: 80 + Math.random() * 60, // Size between 80-140px
-        })
-      }
-
-      setProducts(newProducts)
-    }
-
-    generateProducts()
-  }, [])
+  useEffect(() => {
+    if (products.length === 0) return;
+    const intervals: NodeJS.Timeout[] = [];
+    products.forEach((product, idx) => {
+      const loop = () => {
+        setProducts((prev) => {
+          const updated = [...prev];
+          updated[idx] = generateProduct(product.id);
+          return updated;
+        });
+      };
+      const interval = setInterval(loop, (product.delay + product.duration) * 1000);
+      intervals.push(interval);
+    });
+    return () => {
+      intervals.forEach(clearInterval);
+    };
+    // Only run this effect once after products are initialized
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products.length]);
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
@@ -97,5 +125,5 @@ export default function FallingProducts() {
         />
       ))}
     </div>
-  )
+  );
 }

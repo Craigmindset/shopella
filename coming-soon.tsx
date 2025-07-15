@@ -1,45 +1,45 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import type { ReactElement } from "react"
+import type { ReactElement } from "react";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Mail, Instagram, Twitter, Facebook } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
-import FallingProducts from "./components/falling-products"
-import dynamic from "next/dynamic"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Mail, Instagram, Twitter, Facebook } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import FallingProducts from "./components/falling-products";
+import dynamic from "next/dynamic";
 
 // Dynamically import Lottie to avoid SSR issues
-const Lottie = dynamic(() => import("lottie-react"), { ssr: false })
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 export default function Component(): ReactElement {
-  const [email, setEmail] = useState("")
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [animationData, setAnimationData] = useState(null)
+  const [email, setEmail] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [animationData, setAnimationData] = useState(null);
 
   // Load the Lottie animation
   useState(() => {
     fetch("/animations/loading-animation.json")
       .then((response) => response.json())
       .then((data) => setAnimationData(data))
-      .catch((error) => console.error("Error loading animation:", error))
-  }, [])
+      .catch((error) => console.error("Error loading animation:", error));
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (email) {
-      setIsSubmitted(true)
+      setIsSubmitted(true);
       // Here you would typically send the email to your backend
       setTimeout(() => {
-        setIsSubmitted(false)
-        setEmail("")
-      }, 3000)
+        setIsSubmitted(false);
+        setEmail("");
+      }, 3000);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4 relative overflow-hidden">
@@ -112,13 +112,22 @@ export default function Component(): ReactElement {
           >
             <div className="w-40 h-40 flex items-center justify-center">
               {animationData ? (
-                <Lottie animationData={animationData} style={{ width: 160, height: 160 }} loop={true} autoplay={true} />
+                <Lottie
+                  animationData={animationData}
+                  style={{ width: 160, height: 160 }}
+                  loop={true}
+                  autoplay={true}
+                />
               ) : (
                 // Fallback loading spinner while Lottie loads
                 <div className="w-32 h-32 bg-gradient-to-br from-blue-900/20 to-indigo-900/20 rounded-full flex items-center justify-center">
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                    transition={{
+                      duration: 2,
+                      repeat: Number.POSITIVE_INFINITY,
+                      ease: "linear",
+                    }}
                     className="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full"
                   />
                 </div>
@@ -133,9 +142,12 @@ export default function Component(): ReactElement {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="mb-6"
           >
-            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-2">Coming Soon</h2>
+            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-2">
+              Coming Soon
+            </h2>
             <p className="text-gray-600 text-sm md:text-base">
-              We're crafting something amazing for you. Get ready for the ultimate shopping experience!
+              We're crafting something amazing for you. Get ready for the
+              ultimate shopping experience!
             </p>
           </motion.div>
 
@@ -160,11 +172,14 @@ export default function Component(): ReactElement {
               </div>
               <Button
                 type="submit"
-                className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold"
+                className="w-full h-12 bg-gradient-to-r from-blue-800 to-indigo-900 hover:from-blue-900 hover:to-indigo-950 text-white font-semibold"
                 disabled={isSubmitted}
               >
                 {isSubmitted ? (
-                  <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
                     ✓ Thank you!
                   </motion.span>
                 ) : (
@@ -242,5 +257,5 @@ export default function Component(): ReactElement {
         ))}
       </div>
     </div>
-  )
+  );
 }
